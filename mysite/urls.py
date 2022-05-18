@@ -20,6 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('polls/', include('polls.urls')),
     path('api/', include('rest_framework.urls')),
+    path('api/', include('musicians.urls')),
 
 ]
 # VER 1
