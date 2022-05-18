@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     # (plantilla, archivo estático, comando de administración, traducción),
     # la aplicación que aparece primero en INSTALLED_APPS tiene prioridad.
     'polls.apps.PollsConfig',
+    'musicians.apps.MusiciansConfig',
     # VER 1
     'django.contrib.admin',
     'django.contrib.auth',
