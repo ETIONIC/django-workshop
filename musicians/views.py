@@ -1,21 +1,21 @@
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from musicians.models import Musician
 from musicians.serializers import MusicianSerializer
+from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 
-@api_view(['GET', 'POST'])
-def musician_list(request):
+class MusicianList(APIView):
     """
-    List all code musicians, or create a new musician.
+    List all musicians, or create a new musician.
     """
-    if request.method == 'GET':
+    def get(self, request, format=None):
         musicians = Musician.objects.all()
         serializer = MusicianSerializer(musicians, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         serializer = MusicianSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -24,27 +24,30 @@ def musician_list(request):
 
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def musician_detail(request, pk):
+class MusicianDetail(APIView):
     """
-    Retrieve, update or delete a code musician.
+    Retrieve, update or delete a musician instance.
     """
-    try:
-        musician = Musician.objects.get(pk=pk)
-    except Musician.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    def get_object(self, pk):
+        try:
+            return Musician.objects.get(pk=pk)
+        except Musician.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
+    def get(self, request, pk, format=None):
+        musician = self.get_object(pk)
         serializer = MusicianSerializer(musician)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+    def put(self, request, pk, format=None):
+        musician = self.get_object(pk)
         serializer = MusicianSerializer(musician, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        musician = self.get_object(pk)
         musician.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
