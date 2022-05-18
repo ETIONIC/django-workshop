@@ -29,5 +29,6 @@ class MusicbandAdmin(admin.ModelAdmin):
     list_filter = ('members',)
 
 
-admin.site.register(Album)
-# Register your models here.
+@admin.register(Album)
+class AlbumAdmin(admin.ModelAdmin):
+    search_fields = ['name', 'musicband__name']
