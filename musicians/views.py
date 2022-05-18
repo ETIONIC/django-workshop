@@ -1,45 +1,50 @@
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from musicians.models import Musician
 from musicians.serializers import MusicianSerializer
 
-@csrf_exempt
+
+@api_view(['GET', 'POST'])
 def musician_list(request):
+    """
+    List all code musicians, or create a new musician.
+    """
     if request.method == 'GET':
         musicians = Musician.objects.all()
         serializer = MusicianSerializer(musicians, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = MusicianSerializer(data=data)
+        serializer = MusicianSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
-@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
 def musician_detail(request, pk):
+    """
+    Retrieve, update or delete a code musician.
+    """
     try:
-        snippet = Musician.objects.get(pk=pk)
+        musician = Musician.objects.get(pk=pk)
     except Musician.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = MusicianSerializer(snippet)
-        return JsonResponse(serializer.data)
+        serializer = MusicianSerializer(musician)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = MusicianSerializer(snippet, data=data)
+        serializer = MusicianSerializer(musician, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        snippet.delete()
-        return HttpResponse(status=204)
+        musician.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
