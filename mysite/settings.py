@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     # la aplicación que aparece primero en INSTALLED_APPS tiene prioridad.
     'polls.apps.PollsConfig',
     'musicians.apps.MusiciansConfig',
+    'rest_framework',
+    'django_extensions',
     # VER 1
     'django.contrib.admin',
     'django.contrib.auth',
