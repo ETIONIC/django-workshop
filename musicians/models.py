@@ -6,6 +6,13 @@ class Musician(models.Model):
     last_name = models.CharField(max_length=50)
     instrument = models.CharField(max_length=100)
 
+    @property
+    def name(self):
+        return '%s %s' % (self.first_name, self.last_name)
+
+    def __str__(self):
+        return self.name
+
 class Musicband(models.Model):
     name = models.CharField(max_length=128)
     members = models.ManyToManyField(Musician)
@@ -19,7 +26,8 @@ class Album(models.Model):
     release_date = models.DateField()
     num_stars = models.IntegerField()
 
-
+    def __str__(self):
+        return self.name + ' | ' + self.musicband.name
 
 """
 
