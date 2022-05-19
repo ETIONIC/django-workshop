@@ -7,6 +7,20 @@ from musicians.serializers import MusicianSerializer
 from rest_framework import filters
 from django_filters import rest_framework
 
+
+
+class MusicianFilter(rest_framework.FilterSet):
+    first_name = rest_framework.CharFilter(lookup_expr='icontains')
+    last_name = rest_framework.CharFilter(lookup_expr='iexact')
+
+
+    class Meta:
+        model = Musician
+        fields = [
+            'instrument',
+        ]
+
+
 class MusicianViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
@@ -16,7 +30,7 @@ class MusicianViewSet(viewsets.ModelViewSet):
     serializer_class = MusicianSerializer
     filter_backends = [rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['instrument']
-    filterset_fields = ['first_name', 'last_name']
+    filter_class = MusicianFilter
 
     # def get_queryset(self):
     #     user = self.request.user
