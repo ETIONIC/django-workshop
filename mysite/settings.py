@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'musicians.apps.MusiciansConfig',
     'rest_framework',
     'django_extensions',
+    'django_filters',
     # VER 1
     'django.contrib.admin',
     'django.contrib.auth',

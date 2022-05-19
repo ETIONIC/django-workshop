@@ -4,6 +4,8 @@ from rest_framework import permissions
 from rest_framework import viewsets
 from musicians.models import Musician
 from musicians.serializers import MusicianSerializer
+from rest_framework import filters
+from django_filters import rest_framework
 
 class MusicianViewSet(viewsets.ModelViewSet):
     """
@@ -12,7 +14,13 @@ class MusicianViewSet(viewsets.ModelViewSet):
     """
     queryset = Musician.objects.all()
     serializer_class = MusicianSerializer
+    filter_backends = [rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['instrument']
+    filterset_fields = ['first_name', 'last_name']
 
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     return user.purchase_set.all()
 
 
 
